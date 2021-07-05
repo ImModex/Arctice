@@ -1,0 +1,10 @@
+main: de.Modex.arctice.survival.Main
+name: Arctice
+version: 1.0
+author: Modex
+api-version: 1.13
+
+commands:
+  mute:
+  nick:
+  level:
