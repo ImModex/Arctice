@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,6 +20,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Random;
 
 public class TimberListener implements Listener {
+
+    @EventHandler
+    public void on(PlayerJoinEvent e) {
+        if (!LevelUtils.playerFeatures.containsKey(e.getPlayer())) {
+            LevelUtils.playerFeatures.put(e.getPlayer(), new FeatureContainer());
+        }
+    }
 
     @EventHandler
     public void on(PlayerItemHeldEvent e) {
