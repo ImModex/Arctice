@@ -124,7 +124,7 @@ public class LevelUtils {
 
     public static int getLevel(ItemStack tool) {
         if (levelRequirements.get(tool.getType()) != null)
-            return (int) Math.round(getBrokenBlocks(tool) / (levelRequirements.get(tool.getType()) / 10));
+            return (int) Math.floor(getBrokenBlocks(tool) / (levelRequirements.get(tool.getType()) / 10));
         return 0;
     }
 }
