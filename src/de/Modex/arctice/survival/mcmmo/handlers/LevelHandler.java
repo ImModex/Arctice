@@ -1,6 +1,7 @@
 package de.Modex.arctice.survival.mcmmo.handlers;
 
 import de.Modex.arctice.survival.mcmmo.LevelUtils;
+import de.Modex.arctice.survival.utils.Strings;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ public abstract class LevelHandler {
 
     public void _level() {
         int level = LevelUtils.getLevel(tool);
+        p.sendMessage(Strings.prefix + "§7Your tool just leveled to level §a" + level);
 
         if (level == 100)
             levelGod();
