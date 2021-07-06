@@ -1,18 +1,18 @@
 package de.Modex.arctice.survival.beaconrange;
 
 import de.Modex.arctice.survival.Main;
-import de.Modex.arctice.survival.utils.CustomListener;
 import org.bukkit.Material;
 import org.bukkit.block.Beacon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class BeaconEffectListener extends CustomListener {
+public class BeaconEffectListener implements Listener {
 
     public static BukkitTask beaconTask;
     public static final HashSet<Beacon> beacons = new HashSet<>();
