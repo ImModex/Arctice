@@ -54,7 +54,6 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FactionScytheListener(), this);
         Bukkit.getPluginManager().registerEvents(new MendingInfinityListener(), this);
         Bukkit.getPluginManager().registerEvents(new BeaconEffectListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BonkListener(), this);
         //Bukkit.getPluginManager().registerEvents(new CompassInteractListener(this), this);
 
         Bukkit.getPluginManager().registerEvents(new NetheriteLevelListener(), this);

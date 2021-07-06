@@ -2,10 +2,12 @@ package de.Modex.arctice.survival.bonk;
 
 import de.Modex.arctice.survival.Main;
 import de.Modex.arctice.survival.utils.CustomListener;
+import de.Modex.arctice.survival.utils.ListenerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,7 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BonkListener extends CustomListener {
+public class BonkListener implements CustomListener {
 
     private static final ArrayList<Player> bonkCooldown = new ArrayList<>();
 
@@ -49,5 +51,10 @@ public class BonkListener extends CustomListener {
                 }
             }
         }
+    }
+
+    @Override
+    public void register() {
+        ListenerUtils.registerListener(this);
     }
 }
