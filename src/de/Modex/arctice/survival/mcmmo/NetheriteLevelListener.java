@@ -20,7 +20,7 @@ public class NetheriteLevelListener implements Listener {
         Player p = e.getPlayer();
         ItemStack tool = p.getInventory().getItemInMainHand();
 
-        if (LevelUtils.levelRequirements.containsKey(tool.getType()) && e.getBlock().isPreferredTool(tool)) {
+        if (!p.getInventory().getItemInMainHand().getType().name().toLowerCase().contains("sword") && LevelUtils.levelRequirements.containsKey(tool.getType()) && e.getBlock().isPreferredTool(tool)) {
             LevelUtils.setBrokenBlocks(tool, LevelUtils.getBrokenBlocks(tool) + 1, p);
         }
     }
