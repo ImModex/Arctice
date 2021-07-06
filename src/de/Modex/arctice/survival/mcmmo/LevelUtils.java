@@ -17,11 +17,12 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class LevelUtils {
 
-    public static HashMap<Player, FeatureContainer> playerFeatures = new HashMap<>() {{
-        Bukkit.getOnlinePlayers().forEach(player -> put(player, new FeatureContainer()));
+    public static HashMap<UUID, FeatureContainer> playerFeatures = new HashMap<>() {{
+        Bukkit.getOnlinePlayers().forEach(player -> put(player.getUniqueId(), new FeatureContainer()));
     }};
 
     public static HashMap<Material, Double> levelRequirements = new HashMap<>() {{

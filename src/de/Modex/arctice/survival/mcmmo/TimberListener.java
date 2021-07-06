@@ -23,8 +23,8 @@ public class TimberListener implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent e) {
-        if (!LevelUtils.playerFeatures.containsKey(e.getPlayer())) {
-            LevelUtils.playerFeatures.put(e.getPlayer(), new FeatureContainer());
+        if (!LevelUtils.playerFeatures.containsKey(e.getPlayer().getUniqueId())) {
+            LevelUtils.playerFeatures.put(e.getPlayer().getUniqueId(), new FeatureContainer());
         }
     }
 
@@ -32,7 +32,7 @@ public class TimberListener implements Listener {
     public void on(PlayerItemHeldEvent e) {
         Player p = e.getPlayer();
         if (p.getInventory().getItem(e.getNewSlot()) != null && p.getInventory().getItem(e.getNewSlot()).getType().equals(Material.NETHERITE_AXE) && LevelUtils.getLevel(p.getInventory().getItem(e.getNewSlot())) >= 10) {
-            if (LevelUtils.playerFeatures.get(p).isTimberMode()) {
+            if (LevelUtils.playerFeatures.get(p.getUniqueId()).isTimberMode()) {
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§7Timber Mode §aON"));
             } else {
                 p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§7Timber Mode §cOFF"));
@@ -45,11 +45,11 @@ public class TimberListener implements Listener {
         Player p = e.getPlayer();
         if (!CooldownHandler.isTimberCooldown(p)) {
             if (LevelUtils.getLevel(p.getInventory().getItemInMainHand()) >= 10 && (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
-                if (!LevelUtils.playerFeatures.get(p).isTimberMode()) {
-                    LevelUtils.playerFeatures.put(p, LevelUtils.playerFeatures.get(p).setTimberMode(true));
+                if (!LevelUtils.playerFeatures.get(p.getUniqueId()).isTimberMode()) {
+                    LevelUtils.playerFeatures.put(p.getUniqueId(), LevelUtils.playerFeatures.get(p.getUniqueId()).setTimberMode(true));
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§7Timber Mode §aON"));
                 } else {
-                    LevelUtils.playerFeatures.put(p, LevelUtils.playerFeatures.get(p).setTimberMode(false));
+                    LevelUtils.playerFeatures.put(p.getUniqueId(), LevelUtils.playerFeatures.get(p.getUniqueId()).setTimberMode(false));
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§7Timber Mode §cOFF"));
                 }
                 CooldownHandler.startCooldown(p, 60, CooldownReason.TIMBER, null);
@@ -62,7 +62,7 @@ public class TimberListener implements Listener {
         Player p = e.getPlayer();
         Block b = e.getBlock();
 
-        if (LevelUtils.playerFeatures.get(p).isTimberMode() && LevelUtils.getLevel(p.getInventory().getItemInMainHand()) >= 10 && (b.getType().name().contains("LOG") || b.getType().name().contains("STEM"))) {
+        if (LevelUtils.playerFeatures.get(p.getUniqueId()).isTimberMode() && LevelUtils.getLevel(p.getInventory().getItemInMainHand()) >= 10 && (b.getType().name().contains("LOG") || b.getType().name().contains("STEM"))) {
             breakTree(b, p.getInventory().getItemInMainHand(), p);
         }
     }
