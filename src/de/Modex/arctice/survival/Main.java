@@ -16,7 +16,6 @@ import de.Modex.arctice.survival.tasks.ZombieDespawnTask;
 import de.Modex.arctice.survival.utils.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -54,6 +53,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FactionScytheListener(), this);
         Bukkit.getPluginManager().registerEvents(new MendingInfinityListener(), this);
         Bukkit.getPluginManager().registerEvents(new BeaconEffectListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BonkListener(), this);
         //Bukkit.getPluginManager().registerEvents(new CompassInteractListener(this), this);
 
         Bukkit.getPluginManager().registerEvents(new NetheriteLevelListener(), this);
