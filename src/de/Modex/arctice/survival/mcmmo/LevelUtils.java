@@ -20,6 +20,10 @@ import java.util.HashMap;
 
 public class LevelUtils {
 
+    public static HashMap<Player, FeatureContainer> playerFeatures = new HashMap<>() {{
+        Bukkit.getOnlinePlayers().forEach(player -> put(player, new FeatureContainer()));
+    }};
+
     public static HashMap<Material, Double> levelRequirements = new HashMap<>() {{
         put(Material.NETHERITE_AXE, 50000d);
         put(Material.NETHERITE_HOE, 100000d);
