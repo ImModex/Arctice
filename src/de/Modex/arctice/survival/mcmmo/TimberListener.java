@@ -1,6 +1,5 @@
 package de.Modex.arctice.survival.mcmmo;
 
-import de.Modex.arctice.survival.utils.Strings;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
