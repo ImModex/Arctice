@@ -111,7 +111,7 @@ public class BeaconTask extends BukkitRunnable {
 
             for (int x = b.getChunk().getX() - 2; x <= b.getChunk().getX() + 2; x++) {
                 for (int z = b.getChunk().getZ() - 2; z <= b.getChunk().getZ() + 2; z++) {
-                    chunkDistanceManager.removeRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 1, Main.instance);
+                    chunkDistanceManager.removeRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 2, Main.instance);
                 }
             }
 

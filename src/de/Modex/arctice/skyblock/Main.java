@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import de.Modex.arctice.skyblock.beaconrange.BeaconEffectListener;
 import de.Modex.arctice.skyblock.commands.mute;
 import de.Modex.arctice.skyblock.commands.nick;
+import de.Modex.arctice.skyblock.commands.spawnable;
 import de.Modex.arctice.skyblock.listener.*;
 import de.Modex.arctice.skyblock.names.PrefixHandler;
 import de.Modex.arctice.skyblock.silkspawners.BlockBreakListener;
@@ -167,6 +168,7 @@ public class Main extends JavaPlugin {
     private void registerCommands() {
         getCommand("mute").setExecutor(new mute());
         getCommand("nick").setExecutor(new nick());
+        getCommand("spawnable").setExecutor(new spawnable());
         //getCommand("level").setExecutor(new level());
     }
 }

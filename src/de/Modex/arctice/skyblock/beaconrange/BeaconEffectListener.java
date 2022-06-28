@@ -80,7 +80,7 @@ public class BeaconEffectListener implements Listener {
 
                 for (int x = block.getChunk().getX() - 2; x <= block.getChunk().getX() + 2; x++) {
                     for (int z = block.getChunk().getZ() - 2; z <= block.getChunk().getZ() + 2; z++) {
-                        chunkDistanceManager.addRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 1, Main.instance);
+                        chunkDistanceManager.addRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 2, Main.instance);
                         block.getWorld().getChunkAt(x, z);
                     }
                 }
