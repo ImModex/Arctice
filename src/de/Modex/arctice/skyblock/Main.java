@@ -169,6 +169,7 @@ public class Main extends JavaPlugin {
         getCommand("mute").setExecutor(new mute());
         getCommand("nick").setExecutor(new nick());
         getCommand("spawnable").setExecutor(new spawnable());
+        getCommand("spawnable").setTabCompleter(new spawnable());
         //getCommand("level").setExecutor(new level());
     }
 }
