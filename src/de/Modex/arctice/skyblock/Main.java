@@ -14,6 +14,8 @@ import de.Modex.arctice.skyblock.silkspawners.BlockBreakListener;
 import de.Modex.arctice.skyblock.silkspawners.SpawnerBreakListener;
 import de.Modex.arctice.skyblock.utils.Strings;
 import org.bukkit.*;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -39,6 +41,7 @@ public class Main extends JavaPlugin {
         registerEvents();
         registerCommands();
 
+        Bukkit.getWorlds().forEach(world -> world.getEntities().stream().filter(entity -> entity instanceof Enderman).filter(enderman -> ((Enderman) enderman).getCarriedBlock() != null && enderman.getCustomName() == null).forEach(Entity::remove));
         /*
         File output = null;
         try {
@@ -163,6 +166,7 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EnchantItemListener(), this);
 
         Bukkit.getPluginManager().registerEvents(new ItemRepairListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EntityChangeBlockListener(), this);
     }
 
     private void registerCommands() {
