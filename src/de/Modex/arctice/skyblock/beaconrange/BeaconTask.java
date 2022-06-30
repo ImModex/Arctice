@@ -10,12 +10,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Beacon;
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class BeaconTask extends BukkitRunnable {
 
@@ -45,8 +48,10 @@ public class BeaconTask extends BukkitRunnable {
                             if (getTier(b) == 4)
                                 player.addPotionEffect(b.getPrimaryEffect());
                             else {
-                                player.removePotionEffect(b.getPrimaryEffect().getType());
-                                player.addPotionEffect(new PotionEffect(b.getPrimaryEffect().getType(), b.getPrimaryEffect().getDuration(), 0));
+                                if (!betterEffectInRange(player, b.getPrimaryEffect())) {
+                                    player.removePotionEffect(b.getPrimaryEffect().getType());
+                                    player.addPotionEffect(new PotionEffect(b.getPrimaryEffect().getType(), b.getPrimaryEffect().getDuration(), 0));
+                                }
                             }
 
                         if (b.getSecondaryEffect() != null && getTier(b) == 4)
@@ -56,6 +61,36 @@ public class BeaconTask extends BukkitRunnable {
             });
         });
         BeaconEffectListener.beacons.removeIf(toRemove::contains);
+    }
+
+    private boolean betterEffectInRange(Player p, PotionEffect effect) {
+        AtomicBoolean ret = new AtomicBoolean(false);
+
+        getBeaconsInRange(p).forEach(beacon -> {
+            if (beacon.getPrimaryEffect() != null && beacon.getPrimaryEffect().getType().equals(effect.getType()) && beacon.getPrimaryEffect().getAmplifier() > effect.getAmplifier())
+                ret.set(true);
+
+            if (beacon.getSecondaryEffect() != null && beacon.getSecondaryEffect().getType().equals(effect.getType()) && beacon.getSecondaryEffect().getAmplifier() > effect.getAmplifier())
+                ret.set(true);
+        });
+
+        return ret.get();
+    }
+
+    private List<Beacon> getBeaconsInRange(Player p) {
+        return BeaconEffectListener.beacons.stream().filter(beacon -> distance(beacon.getLocation(), p.getLocation()) <= maxDistance(beacon.getTier())).collect(Collectors.toList());
+    }
+
+    private List<PotionEffect> getPotionEffectsInRange(Player p) {
+        List<PotionEffect> ret = new ArrayList<>();
+        getBeaconsInRange(p).forEach(beacon -> {
+            if (beacon.getPrimaryEffect() != null)
+                ret.add(beacon.getPrimaryEffect());
+            if (beacon.getSecondaryEffect() != null)
+                ret.add(beacon.getSecondaryEffect());
+        });
+
+        return ret;
     }
 
     private boolean effectTierCompatible(int tier, PotionEffect effect) {
