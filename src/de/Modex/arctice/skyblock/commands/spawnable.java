@@ -8,7 +8,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayOutBlockChange;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3D;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -32,11 +35,17 @@ public class spawnable extends CustomCommand implements TabCompleter {
         return false;
     }
 
-    private static List<Material> nonSpawnable = new ArrayList<>(List.of(Material.TORCH, Material.GLOWSTONE, Material.SHROOMLIGHT, Material.DIRT_PATH, Material.FARMLAND, Material.SNOW, Material.LEVER, Material.LAVA, Material.WATER, Material.BEDROCK, Material.AIR, Material.CHEST, Material.CAVE_AIR, Material.VOID_AIR, Material.FIRE));
+    private static final List<Material> nonSpawnable = new ArrayList<>(List.of(Material.TORCH, Material.GLOWSTONE, Material.SHROOMLIGHT, Material.DIRT_PATH, Material.FARMLAND, Material.SNOW, Material.LEVER, Material.LAVA, Material.WATER, Material.BEDROCK, Material.AIR, Material.CHEST, Material.CAVE_AIR,
+            Material.VOID_AIR, Material.FIRE, Material.REDSTONE_BLOCK, Material.DAYLIGHT_DETECTOR, Material.JUKEBOX, Material.LECTERN, Material.LEVER, Material.LIGHTNING_ROD, Material.OBSERVER, Material.REDSTONE_TORCH, Material.SCULK_SENSOR,
+            Material.TARGET, Material.TRAPPED_CHEST, Material.TRIPWIRE_HOOK, Material.REDSTONE_WIRE, Material.REPEATER, Material.COMPARATOR, Material.BELL, Material.DISPENSER, Material.DRAGON_HEAD, Material.DROPPER, Material.HOPPER,
+            Material.NOTE_BLOCK, Material.REDSTONE_LAMP, Material.REDSTONE_WALL_TORCH, Material.TNT, Material.STRUCTURE_BLOCK, Material.STRUCTURE_VOID, Material.SWEET_BERRY_BUSH, Material.BARRIER));
 
     static {
         for (int i = 0; i < Material.values().length; i++) {
-            if (Material.values()[i].name().contains("GLASS") || Material.values()[i].name().contains("LEAVES") || Material.values()[i].name().contains("SLAB") || Material.values()[i].name().contains("CARPET") || Material.values()[i].name().contains("BUTTON") || Material.values()[i].name().contains("PRESSURE") || Material.values()[i].name().contains("RAIL") || Material.values()[i].name().contains("FENCE") || Material.values()[i].name().contains("STAIR") || Material.values()[i].name().contains("WALL"))
+            if (!Material.values()[i].isSolid() || Material.values()[i].name().contains("GLASS") || Material.values()[i].name().contains("LEAVES") || Material.values()[i].name().contains("SLAB") || Material.values()[i].name().contains("CARPET") ||
+                    Material.values()[i].name().contains("PRESSURE") || Material.values()[i].name().contains("RAIL") || Material.values()[i].name().contains("FENCE") || Material.values()[i].name().contains("STAIR") || Material.values()[i].name().contains("WALL") ||
+                    Material.values()[i].name().contains("DOOR") || Material.values()[i].name().contains("COMMAND") || Material.values()[i].name().contains("PISTON") || Material.values()[i].name().contains("TRAPDOOR") || Material.values()[i].name().contains("BOAT") ||
+                    Material.values()[i].name().contains("MINECART") || Material.values()[i].name().contains("BUTTON"))
                 nonSpawnable.add(Material.values()[i]);
         }
     }
@@ -95,18 +104,21 @@ public class spawnable extends CustomCommand implements TabCompleter {
         }
 
         List<Packet<?>> packets = new ArrayList<>();
+        List<BlockPosition> emeraldBlocks = new ArrayList<>();
 
         if (mode == Mode.ALL || mode == Mode.SQUARE) {
             for (int x = (int) (p.getLocation().getBlockX() - radius); x <= (int) (p.getLocation().getBlockX() + radius); x++) {
                 for (int y = 0; y <= 255; y++) {
                     for (int z = (int) (p.getLocation().getBlockZ() - radius); z <= (int) (p.getLocation().getBlockZ() + radius); z++) {
-                        if (!nonSpawnable.contains(p.getWorld().getBlockAt(x, y, z).getType()) && (p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.AIR || p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.CAVE_AIR || p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.VOID_AIR)) {
-                            num++;
-                            if (drawSpawnable)
-                                packets.add(new PacketPlayOutBlockChange(new BlockPosition(x, y + 1, z), Blocks.eQ.m()));
-                        }
-
                         blocksConsidered++;
+                        if (isSpawnable(p.getWorld(), x, y, z)) {
+                            num++;
+                            if (drawSpawnable) {
+                                BlockPosition bp = new BlockPosition(x, y + 1, z);
+                                emeraldBlocks.add(bp);
+                            }
+                            continue;
+                        }
 
                         if (x == (int) (p.getLocation().getBlockX() - radius) || x == (int) (p.getLocation().getBlockX() + radius) || z == (int) (p.getLocation().getBlockZ() - radius) || z == (int) (p.getLocation().getBlockZ() + radius)) {
                             packets.add(new PacketPlayOutBlockChange(new BlockPosition(x, y, z), Blocks.dy.m()));
@@ -115,6 +127,9 @@ public class spawnable extends CustomCommand implements TabCompleter {
                 }
             }
 
+            ReflectionUtils.sendPacket(p, packets.toArray());
+            packets.clear();
+            emeraldBlocks.forEach(emeraldBlock -> packets.add(new PacketPlayOutBlockChange(emeraldBlock, Blocks.eQ.m())));
             ReflectionUtils.sendPacket(p, packets.toArray());
             packets.clear();
             p.sendMessage(Strings.prefix + "§c" + num + " §7blocks are spawnable! §a" + blocksConsidered + " §7blocks taken into consideration. Using square formula");
@@ -130,14 +145,17 @@ public class spawnable extends CustomCommand implements TabCompleter {
                 for (int y = 0; y <= 255; y++) {
                     for (int z = (int) (p.getLocation().getBlockZ() - radius); z <= (int) (p.getLocation().getBlockZ() + radius); z++) {
                         double distance = Math.pow((p.getLocation().getBlockZ() - z), 2) + Math.pow(p.getLocation().getBlockX() - x, 2);
-                        if (distance <= square) {
-                            if (!nonSpawnable.contains(p.getWorld().getBlockAt(x, y, z).getType()) && (p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.AIR || p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.CAVE_AIR || p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.VOID_AIR)) {
-                                num++;
-                                if (drawSpawnable && mode != Mode.ALL)
-                                    packets.add(new PacketPlayOutBlockChange(new BlockPosition(x, y + 1, z), Blocks.eQ.m()));
-                            }
 
+                        if (distance <= square) {
                             blocksConsidered++;
+                            if (isSpawnable(p.getWorld(), x, y, z)) {
+                                num++;
+                                if (drawSpawnable && mode != Mode.ALL) {
+                                    BlockPosition bp = new BlockPosition(x, y + 1, z);
+                                    emeraldBlocks.add(bp);
+                                }
+                                continue;
+                            }
                         }
 
                         if ((distance > Math.pow(radius - 1, 2)) && (distance < Math.pow(radius + 1, 2))) {
@@ -149,7 +167,9 @@ public class spawnable extends CustomCommand implements TabCompleter {
 
             ReflectionUtils.sendPacket(p, packets.toArray());
             packets.clear();
-
+            emeraldBlocks.forEach(emeraldBlock -> packets.add(new PacketPlayOutBlockChange(emeraldBlock, Blocks.eQ.m())));
+            ReflectionUtils.sendPacket(p, packets.toArray());
+            packets.clear();
             p.sendMessage(Strings.prefix + "§c" + num + " §7blocks are spawnable! §a" + blocksConsidered + " §7blocks taken into consideration. Using circle formula");
 
             num = 0;
@@ -163,29 +183,37 @@ public class spawnable extends CustomCommand implements TabCompleter {
                     for (int z = (int) (p.getLocation().getBlockZ() - radius); z <= (int) (p.getLocation().getBlockZ() + radius); z++) {
                         double distance = Math.pow((p.getLocation().getBlockZ() - z), 2) + Math.pow(p.getLocation().getBlockX() - x, 2) + Math.pow(p.getLocation().getBlockY() - y, 2);
 
+                        if (distance <= square) {
+                            blocksConsidered++;
+                            if (isSpawnable(p.getWorld(), x, y, z)) {
+                                num++;
+                                if (drawSpawnable && mode != Mode.ALL) {
+                                    BlockPosition bp = new BlockPosition(x, y + 1, z);
+                                    emeraldBlocks.add(bp);
+                                }
+                                continue;
+                            }
+                        }
                         if ((distance > Math.pow(radius - 1, 2)) && (distance < Math.pow(radius + 1, 2))) {
                             packets.add(new PacketPlayOutBlockChange(new BlockPosition(x, y, z), Blocks.dF.m()));
-                        }
-
-
-                        if (distance <= square) {
-                            if (!nonSpawnable.contains(p.getWorld().getBlockAt(x, y, z).getType()) && (p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.AIR || p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.CAVE_AIR || p.getWorld().getBlockAt(x, y + 1, z).getType() == Material.VOID_AIR)) {
-                                num++;
-                                if (drawSpawnable && mode != Mode.ALL)
-                                    packets.add(new PacketPlayOutBlockChange(new BlockPosition(x, y + 1, z), Blocks.eQ.m()));
-                            }
-                            blocksConsidered++;
                         }
                     }
                 }
             }
 
             ReflectionUtils.sendPacket(p, packets.toArray());
+            packets.clear();
+            emeraldBlocks.forEach(emeraldBlock -> packets.add(new PacketPlayOutBlockChange(emeraldBlock, Blocks.eQ.m())));
+            ReflectionUtils.sendPacket(p, packets.toArray());
             p.sendMessage(Strings.prefix + "§c" + num + " §7blocks are spawnable! §a" + blocksConsidered + " §7blocks taken into consideration. Using spherical formula");
         }
 
         inUse = false;
         return true;
+    }
+
+    private boolean isSpawnable(World world, int x, int y, int z) {
+        return !nonSpawnable.contains(world.getBlockAt(x, y, z).getType()) && (world.getBlockAt(x, y + 1, z).getType() == Material.AIR || world.getBlockAt(x, y + 1, z).getType() == Material.CAVE_AIR || world.getBlockAt(x, y + 1, z).getType() == Material.VOID_AIR);
     }
 
     @Override
