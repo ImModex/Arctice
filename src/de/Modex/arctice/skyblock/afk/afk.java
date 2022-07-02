@@ -22,6 +22,7 @@ public class afk extends CustomCommand {
     public boolean onPlayerCommand(Player p, String label, String[] args) {
 
         AFKManager.fromUUID(p.getUniqueId()).setAfkTime(60);
+        AFKManager.fromUUID(p.getUniqueId()).setLocation(p.getLocation());
         p.sendMessage(Strings.prefix + "§7You are now set as §cAFK");
         Bukkit.getPluginManager().callEvent(new AFKEvent(p));
 

@@ -49,8 +49,8 @@ public class BeaconEffectListener implements Listener {
 
         Location loc = e.getEntity().getLocation();
         Set<Chunk> chunks = new HashSet<>();
-        for (int x = loc.getBlockX() - 51; x <= loc.getX() + 51; x += 16) {
-            for (int z = loc.getBlockZ() - 51; z <= loc.getZ() + 51; z += 16) {
+        for (int x = loc.getBlockX() - 51; x <= loc.getBlockX() + 51; x += 16) {
+            for (int z = loc.getBlockZ() - 51; z <= loc.getBlockZ() + 51; z += 16) {
                 chunks.add(loc.getWorld().getChunkAt(x >> 4, z >> 4));
             }
         }
@@ -73,27 +73,24 @@ public class BeaconEffectListener implements Listener {
                 beaconLocations.add(block.getLocation());
             config.set("beacons", beaconLocations);
 
-            if (chunk.getPluginChunkTickets().isEmpty())
-                chunk.addPluginChunkTicket(Main.instance);
-                /*
-                try {
-                    Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
-                    chunkProviderField.setAccessible(true);
-                    ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) block.getWorld()).getHandle().k());
+            try {
+                Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
+                chunkProviderField.setAccessible(true);
+                ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) block.getWorld()).getHandle().k());
 
 
-                    for (int x = block.getChunk().getX() - 2; x <= block.getChunk().getX() + 2; x++) {
-                        for (int z = block.getChunk().getZ() - 2; z <= block.getChunk().getZ() + 2; z++) {
-                            chunkDistanceManager.addRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 1, Main.instance);
-                            block.getWorld().getChunkAt(x, z);
-                        }
+                for (int x = block.getChunk().getX() - 2; x <= block.getChunk().getX() + 2; x++) {
+                    for (int z = block.getChunk().getZ() - 2; z <= block.getChunk().getZ() + 2; z++) {
+                        chunkDistanceManager.addRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 1, Main.instance);
+                        block.getWorld().getChunkAt(x, z);
                     }
-
-                } catch (NoSuchFieldException | IllegalAccessException ex) {
-                    throw new RuntimeException(ex);
                 }
 
-                 */
+            } catch (NoSuchFieldException | IllegalAccessException ex) {
+                throw new RuntimeException(ex);
+            }
+
+
         }));
     }
 }
