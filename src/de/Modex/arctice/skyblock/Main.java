@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.Modex.arctice.skyblock.beaconrange.BeaconEffectListener;
+import de.Modex.arctice.skyblock.commands.entity;
 import de.Modex.arctice.skyblock.commands.mute;
 import de.Modex.arctice.skyblock.commands.nick;
 import de.Modex.arctice.skyblock.commands.spawnable;
+import de.Modex.arctice.skyblock.gravitycontrol.GravityListener;
 import de.Modex.arctice.skyblock.listener.*;
 import de.Modex.arctice.skyblock.names.PrefixHandler;
 import de.Modex.arctice.skyblock.silkspawners.BlockBreakListener;
@@ -167,6 +169,10 @@ public class Main extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new ItemRepairListener(), this);
         Bukkit.getPluginManager().registerEvents(new EntityChangeBlockListener(), this);
+
+        Bukkit.getPluginManager().registerEvents(new EntitySpawnListener(), this);
+
+        Bukkit.getPluginManager().registerEvents(new GravityListener(), this);
     }
 
     private void registerCommands() {
@@ -174,6 +180,7 @@ public class Main extends JavaPlugin {
         getCommand("nick").setExecutor(new nick());
         getCommand("spawnable").setExecutor(new spawnable());
         getCommand("spawnable").setTabCompleter(new spawnable());
+        getCommand("entity").setExecutor(new entity());
         //getCommand("level").setExecutor(new level());
     }
 }
