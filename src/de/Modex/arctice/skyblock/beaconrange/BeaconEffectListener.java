@@ -73,21 +73,22 @@ public class BeaconEffectListener implements Listener {
                 beaconLocations.add(block.getLocation());
             config.set("beacons", beaconLocations);
 
-            try {
-                Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
-                chunkProviderField.setAccessible(true);
-                ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) block.getWorld()).getHandle().k());
+            if (chunk.getPluginChunkTickets().isEmpty())
+                try {
+                    Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
+                    chunkProviderField.setAccessible(true);
+                    ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) block.getWorld()).getHandle().k());
 
-                for (int x = block.getChunk().getX() - 2; x <= block.getChunk().getX() + 2; x++) {
-                    for (int z = block.getChunk().getZ() - 2; z <= block.getChunk().getZ() + 2; z++) {
-                        chunkDistanceManager.addRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 2, Main.instance);
-                        block.getWorld().getChunkAt(x, z);
+                    for (int x = block.getChunk().getX() - 2; x <= block.getChunk().getX() + 2; x++) {
+                        for (int z = block.getChunk().getZ() - 2; z <= block.getChunk().getZ() + 2; z++) {
+                            chunkDistanceManager.addRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 1, Main.instance);
+                            block.getWorld().getChunkAt(x, z);
+                        }
                     }
-                }
 
-            } catch (NoSuchFieldException | IllegalAccessException ex) {
-                throw new RuntimeException(ex);
-            }
+                } catch (NoSuchFieldException | IllegalAccessException ex) {
+                    throw new RuntimeException(ex);
+                }
         }));
     }
 }

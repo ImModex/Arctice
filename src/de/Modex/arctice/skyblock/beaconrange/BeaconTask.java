@@ -139,20 +139,21 @@ public class BeaconTask extends BukkitRunnable {
     }
 
     private void unregisterBeacon(Beacon b, boolean config) {
-        try {
-            Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
-            chunkProviderField.setAccessible(true);
-            ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) b.getWorld()).getHandle().k());
+        if (!b.getChunk().getPluginChunkTickets().isEmpty())
+            try {
+                Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
+                chunkProviderField.setAccessible(true);
+                ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) b.getWorld()).getHandle().k());
 
-            for (int x = b.getChunk().getX() - 2; x <= b.getChunk().getX() + 2; x++) {
-                for (int z = b.getChunk().getZ() - 2; z <= b.getChunk().getZ() + 2; z++) {
-                    chunkDistanceManager.removeRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 2, Main.instance);
+                for (int x = b.getChunk().getX() - 2; x <= b.getChunk().getX() + 2; x++) {
+                    for (int z = b.getChunk().getZ() - 2; z <= b.getChunk().getZ() + 2; z++) {
+                        chunkDistanceManager.removeRegionTicketAtDistance(TicketType.PLUGIN_TICKET, new ChunkCoordIntPair(x, z), 1, Main.instance);
+                    }
                 }
-            }
 
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
-            throw new RuntimeException(ex);
-        }
+            } catch (NoSuchFieldException | IllegalAccessException ex) {
+                throw new RuntimeException(ex);
+            }
         if (config) {
             List<Location> beaconLocations = (BeaconEffectListener.config.contains("beacons") && BeaconEffectListener.config.config().getList("beacons") != null) ? (ArrayList<Location>) BeaconEffectListener.config.config().getList("beacons") : new ArrayList<>();
             beaconLocations.removeIf(beacon -> beacon.equals(b.getLocation()));
