@@ -140,6 +140,8 @@ public class BeaconTask extends BukkitRunnable {
 
     private void unregisterBeacon(Beacon b, boolean config) {
         if (!b.getChunk().getPluginChunkTickets().isEmpty())
+            b.getChunk().removePluginChunkTicket(Main.instance);
+            /*
             try {
                 Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
                 chunkProviderField.setAccessible(true);
@@ -154,6 +156,8 @@ public class BeaconTask extends BukkitRunnable {
             } catch (NoSuchFieldException | IllegalAccessException ex) {
                 throw new RuntimeException(ex);
             }
+
+             */
         if (config) {
             List<Location> beaconLocations = (BeaconEffectListener.config.contains("beacons") && BeaconEffectListener.config.config().getList("beacons") != null) ? (ArrayList<Location>) BeaconEffectListener.config.config().getList("beacons") : new ArrayList<>();
             beaconLocations.removeIf(beacon -> beacon.equals(b.getLocation()));

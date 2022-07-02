@@ -19,5 +19,7 @@
     </orderEntry>
     <orderEntry type="library" name="spigot-1.19-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="spigot-api-1.19-R0.1-SNAPSHOT-shaded" level="project" />
+    <orderEntry type="library" name="spigot-1.19" level="project" />
+    <orderEntry type="library" name="ProtocolLib1" level="project" />
   </component>
 </module>

@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import de.Modex.arctice.skyblock.afk.AFKListener;
+import de.Modex.arctice.skyblock.afk.AFKManager;
+import de.Modex.arctice.skyblock.afk.afk;
 import de.Modex.arctice.skyblock.beaconrange.BeaconEffectListener;
-import de.Modex.arctice.skyblock.commands.entity;
-import de.Modex.arctice.skyblock.commands.mute;
-import de.Modex.arctice.skyblock.commands.nick;
-import de.Modex.arctice.skyblock.commands.spawnable;
+import de.Modex.arctice.skyblock.commands.*;
 import de.Modex.arctice.skyblock.gravitycontrol.GravityListener;
 import de.Modex.arctice.skyblock.listener.*;
 import de.Modex.arctice.skyblock.names.PrefixHandler;
@@ -16,6 +16,7 @@ import de.Modex.arctice.skyblock.silkspawners.BlockBreakListener;
 import de.Modex.arctice.skyblock.silkspawners.SpawnerBreakListener;
 import de.Modex.arctice.skyblock.utils.Strings;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -173,6 +174,9 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EntitySpawnListener(), this);
 
         Bukkit.getPluginManager().registerEvents(new GravityListener(), this);
+
+        Bukkit.getPluginManager().registerEvents(new AFKListener(), this);
+        AFKManager manager = new AFKManager();
     }
 
     private void registerCommands() {
@@ -181,6 +185,8 @@ public class Main extends JavaPlugin {
         getCommand("spawnable").setExecutor(new spawnable());
         getCommand("spawnable").setTabCompleter(new spawnable());
         getCommand("entity").setExecutor(new entity());
+        getCommand("chunk").setExecutor(new chunk());
+        getCommand("afk").setExecutor(new afk());
         //getCommand("level").setExecutor(new level());
     }
 }

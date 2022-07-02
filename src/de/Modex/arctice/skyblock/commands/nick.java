@@ -136,7 +136,7 @@ public class nick extends CustomCommand {
         return true;
     }
 
-    private static String stripColorCodes(String nick) {
+    public static String stripColorCodes(String nick) {
         if (!nick.contains("§")) return nick;
         String[] str = nick.split("§");
         StringBuilder builder = new StringBuilder();

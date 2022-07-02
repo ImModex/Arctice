@@ -74,10 +74,13 @@ public class BeaconEffectListener implements Listener {
             config.set("beacons", beaconLocations);
 
             if (chunk.getPluginChunkTickets().isEmpty())
+                chunk.addPluginChunkTicket(Main.instance);
+                /*
                 try {
                     Field chunkProviderField = ChunkProviderServer.class.getDeclaredField("c");
                     chunkProviderField.setAccessible(true);
                     ChunkMapDistance chunkDistanceManager = (ChunkMapDistance) chunkProviderField.get(((CraftWorld) block.getWorld()).getHandle().k());
+
 
                     for (int x = block.getChunk().getX() - 2; x <= block.getChunk().getX() + 2; x++) {
                         for (int z = block.getChunk().getZ() - 2; z <= block.getChunk().getZ() + 2; z++) {
@@ -89,6 +92,8 @@ public class BeaconEffectListener implements Listener {
                 } catch (NoSuchFieldException | IllegalAccessException ex) {
                     throw new RuntimeException(ex);
                 }
+
+                 */
         }));
     }
 }

@@ -10,3 +10,5 @@ commands:
   level:
   spawnable:
   entity:
+  chunk:
+  afk:

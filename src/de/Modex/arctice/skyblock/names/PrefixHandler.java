@@ -25,15 +25,28 @@ public class PrefixHandler {
     }
 
     public static void setPrefix(Player p, String name) {
+        setPrefix(p, name, false);
+    }
+
+    public static void setPrefix(Player p, String name, boolean ignoreRank) {
 
         String team = "";
-        for (Rank rank : RankManager.getRanks().values()) {
-            if (PermissionsEx.getUser(p).inGroup(rank.getName())) {
-                team = "0000" + rank.getLadder() + rank.getName();
-                p.setDisplayName(rank.getPrefix() + name);
-                break;
+        if (!ignoreRank)
+            for (Rank rank : RankManager.getRanks().values()) {
+                if (PermissionsEx.getUser(p).inGroup(rank.getName())) {
+                    team = "0000" + rank.getLadder() + rank.getName();
+                    p.setDisplayName(rank.getPrefix() + name);
+                    break;
+                }
             }
-        }
+        else
+            for (Rank rank : RankManager.getRanks().values()) {
+                if (PermissionsEx.getUser(p).inGroup(rank.getName())) {
+                    team = "0000" + rank.getLadder() + rank.getName();
+                    p.setDisplayName(name);
+                    break;
+                }
+            }
 
         if (sb.getTeam(team).hasPlayer(p)) {
             sb.getTeam(team).removePlayer(p);
@@ -52,7 +65,7 @@ public class PrefixHandler {
         }
     }
 
-    public static void updatePrefix(Player p, String name) {
+    public static void updatePrefix(Player p, String name, boolean ignoreRank) {
         boolean hasGroups = false;
 
         for (String rank : RankManager.getRanks().keySet()) {
@@ -65,7 +78,11 @@ public class PrefixHandler {
         if (!hasGroups)
             PermissionsEx.getUser(p).addGroup("Player");
 
-        setPrefix(p, name);
+        setPrefix(p, name, ignoreRank);
+    }
+
+    public static void updatePrefix(Player p, String name) {
+        updatePrefix(p, name, false);
     }
 
     public static void updatePrefix(Player p) {
