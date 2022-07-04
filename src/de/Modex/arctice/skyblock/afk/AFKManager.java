@@ -31,9 +31,9 @@ public class AFKManager {
         return returnTask;
     }
 
-    public static List<Player> toPlayerList(List<AFKPlayerWrapper> afkPlayers) {
-        List<Player> ret = new ArrayList<>();
-        afkPlayers.forEach(afkPlayer -> ret.add(Bukkit.getPlayer(afkPlayer.getPlayer())));
+    public static List<UUID> getPlayers() {
+        List<UUID> ret = new ArrayList<>();
+        afkPlayers.forEach(afkPlayer -> ret.add(afkPlayer.getPlayer()));
         return ret;
     }
 

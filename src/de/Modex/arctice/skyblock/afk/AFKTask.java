@@ -8,13 +8,13 @@ public class AFKTask extends BukkitRunnable {
     @Override
     public void run() {
         Bukkit.getOnlinePlayers().forEach(player -> {
-            if (!AFKManager.toPlayerList(AFKManager.afkPlayers).contains(player))
+            if (!AFKManager.getPlayers().contains(player.getUniqueId()))
                 AFKManager.afkPlayers.add(new AFKPlayerWrapper(player, 0, player.getLocation()));
             else {
                 AFKPlayerWrapper afkPlayer = AFKManager.fromUUID(player.getUniqueId());
 
                 if (!AFKManager.playerOf(afkPlayer).getLocation().equals(afkPlayer.getLocation())) {
-                    if(AFKManager.isAFK(player))
+                    if (AFKManager.isAFK(player))
                         Bukkit.getPluginManager().callEvent(new AFKReturnEvent(AFKManager.playerOf(afkPlayer)));
                 } else {
                     int afkTime = afkPlayer.getAfkTime();
