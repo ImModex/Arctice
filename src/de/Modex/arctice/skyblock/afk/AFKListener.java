@@ -40,6 +40,8 @@ public class AFKListener implements Listener {
     public void on(PlayerJoinEvent e) {
         if (AFKManager.fromUUID(e.getPlayer().getUniqueId()) == null)
             AFKManager.afkPlayers.add(new AFKPlayerWrapper(e.getPlayer(), 0, e.getPlayer().getLocation()));
+        else
+            AFKManager.fromUUID(e.getPlayer().getUniqueId()).setAfkTime(0);
     }
 
     @EventHandler
