@@ -14,12 +14,14 @@ public class AFKTask extends BukkitRunnable {
                 AFKPlayerWrapper afkPlayer = AFKManager.fromUUID(player.getUniqueId());
 
                 if (!AFKManager.playerOf(afkPlayer).getLocation().equals(afkPlayer.getLocation())) {
-                    if (AFKManager.isAFK(player))
+                    if (AFKManager.isAFK(player)) {
                         Bukkit.getPluginManager().callEvent(new AFKReturnEvent(AFKManager.playerOf(afkPlayer)));
+                        AFKManager.afkPlayers.get(AFKManager.afkPlayers.indexOf(afkPlayer)).setLocation(player.getLocation());
+                    }
                 } else {
                     int afkTime = afkPlayer.getAfkTime();
                     AFKManager.afkPlayers.get(AFKManager.afkPlayers.indexOf(afkPlayer)).setAfkTime(afkTime + 10);
-                    if (afkTime >= 60)
+                    if (afkTime == 60)
                         Bukkit.getPluginManager().callEvent(new AFKEvent(AFKManager.playerOf(afkPlayer)));
                 }
             }

@@ -46,6 +46,6 @@ public class AFKManager {
     }
 
     public static boolean isAFK(Player p) {
-        return fromUUID(p.getUniqueId()).getAfkTime() > 60;
+        return fromUUID(p.getUniqueId()).getAfkTime() >= 60;
     }
 }
