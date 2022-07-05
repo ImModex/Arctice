@@ -16,8 +16,9 @@ public class AFKTask extends BukkitRunnable {
                 if (!AFKManager.playerOf(afkPlayer).getLocation().equals(afkPlayer.getLocation())) {
                     if (AFKManager.isAFK(player)) {
                         Bukkit.getPluginManager().callEvent(new AFKReturnEvent(AFKManager.playerOf(afkPlayer)));
-                        AFKManager.afkPlayers.get(AFKManager.afkPlayers.indexOf(afkPlayer)).setLocation(player.getLocation());
                     }
+                    AFKManager.afkPlayers.get(AFKManager.afkPlayers.indexOf(afkPlayer)).setLocation(player.getLocation());
+                    AFKManager.afkPlayers.get(AFKManager.afkPlayers.indexOf(afkPlayer)).setAfkTime(afkPlayer.getAfkTime() + 10);
                 } else {
                     int afkTime = afkPlayer.getAfkTime();
                     AFKManager.afkPlayers.get(AFKManager.afkPlayers.indexOf(afkPlayer)).setAfkTime(afkTime + 10);
